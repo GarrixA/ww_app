@@ -1,6 +1,5 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
+import { PenBox } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -10,69 +9,72 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useEffect, useState } from "react";
+import EmojiPicker from "emoji-picker-react";
 import { Input } from "@/components/ui/input";
 import { db } from "@/utils/dbConfig";
 import { Budgets } from "@/utils/schema";
-import { useUser } from "@clerk/nextjs";
-import EmojiPicker from "emoji-picker-react";
-import { useState } from "react";
+import { eq } from "drizzle-orm";
 import { toast } from "sonner";
 
-const CreateBudget = ({ refreshData }: any) => {
-  const [emojiIcon, setImojiIcon] = useState("😎");
+interface budgetsInfoProps {
+  id: number;
+  name: string;
+  amount: number;
+  icon: string;
+}
+
+const UpdateBudget = ({
+  budgetsInfo,
+  refreshData,
+}: {
+  budgetsInfo: budgetsInfoProps;
+  refreshData: any;
+}) => {
+  const [emojiIcon, setImojiIcon] = useState(
+    (budgetsInfo?.icon || "") as string
+  );
   const [openImojiPicker, setImojiPicker] = useState(false);
-  const [name, setName] = useState<string>("");
-  const [amount, setAmount] = useState<string>("");
+  const [name, setName] = useState<string>((budgetsInfo?.name || "") as string);
+  const [amount, setAmount] = useState<string>(
+    (budgetsInfo?.amount || "") as string
+  );
 
-  const { user, isLoaded } = useUser();
-  const email = user?.primaryEmailAddress?.emailAddress;
-  if (isLoaded && !email) {
-    console.error("Email not present");
-  }
+  useEffect(() => {
+    setImojiIcon(budgetsInfo?.icon);
+    setAmount(String(budgetsInfo?.amount));
+    setName(budgetsInfo?.name);
+  }, [budgetsInfo]);
 
-  // create budget
+  const updateBudget = async () => {
+    const res = await db
+      .update(Budgets)
+      .set({
+        name: name,
+        amount: amount,
+        icon: emojiIcon,
+      })
+      .where(eq(Budgets.id, budgetsInfo.id))
+      .returning();
 
-  const handleSubmit = async () => {
-    if (!email) {
-      console.error("Email not present");
-      toast.error("Unable to create budget: Email is missing");
-      return;
-    }
-
-    try {
-      const createdBudget = await db
-        .insert(Budgets)
-        .values({
-          name: name,
-          amount: amount,
-          createdBy: email,
-          icon: emojiIcon,
-        })
-        .returning({ insertedId: Budgets.id });
-
-      if (createdBudget) {
-        refreshData();
-        toast("New budget created");
-      }
-    } catch (error) {
-      console.error("Error creating budget:", error);
-      toast.error("Failed to create budget");
+    if (res) {
+      refreshData();
+      toast("Budget updated");
     }
   };
 
   return (
     <div>
       <Dialog>
-        <DialogTrigger>
-          <div className="flex flex-col items-center border-2 border-dashed rounded-md bg-slate-100 hover:shadow-lg p-10 cursor-pointer">
-            <h1 className="text-3xl">+</h1>
-            <h1 className="font-bold">Create new budget</h1>
-          </div>
+        <DialogTrigger asChild>
+          <Button className="flex items-center">
+            <PenBox /> Edit
+          </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <div>
-              <DialogTitle>Create new budget</DialogTitle>
+              <DialogTitle>Update budget</DialogTitle>
 
               <div className="mt-5">
                 <Button
@@ -96,6 +98,7 @@ const CreateBudget = ({ refreshData }: any) => {
                 <h1 className="text-black font-medium my-1">Budget name</h1>
                 <Input
                   placeholder="eg: gas"
+                  defaultValue={budgetsInfo?.name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
@@ -104,6 +107,7 @@ const CreateBudget = ({ refreshData }: any) => {
                 <Input
                   placeholder="eg: 50000"
                   type="number"
+                  defaultValue={budgetsInfo?.amount}
                   onChange={(e) => setAmount(e.target.value)}
                 />
               </div>
@@ -114,9 +118,9 @@ const CreateBudget = ({ refreshData }: any) => {
               <Button
                 className="mt-5 w-full"
                 disabled={!(name && amount)}
-                onClick={() => handleSubmit()}
+                onClick={() => updateBudget()}
               >
-                Create budget
+                Update budget
               </Button>
             </DialogClose>
           </DialogFooter>
@@ -126,4 +130,4 @@ const CreateBudget = ({ refreshData }: any) => {
   );
 };
 
-export default CreateBudget;
+export default UpdateBudget;

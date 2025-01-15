@@ -37,7 +37,7 @@ const DashboardLayout = ({
     const result = await db
       .select()
       .from(Budgets)
-      .where(eq(Budgets.createdBy, "aphrodis@gmail.com"));
+      .where(eq(Budgets.createdBy, email));
 
     console.log(result, "Reeeesults");
 
@@ -49,7 +49,7 @@ const DashboardLayout = ({
       router.replace("/dashboard/budgets");
     }
 
-    console.log("resssssult =====>", result);
+    // console.log("resssssult =====>", result);
   };
 
   return (
