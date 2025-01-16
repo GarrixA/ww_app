@@ -1,9 +1,10 @@
 import { UserButton } from "@clerk/nextjs";
+import DashboardComponent from "./_components/DashboardComponent";
 
 const Dashboard = () => {
   return (
     <div className="">
-      <h1>Dashboard</h1>
+      <DashboardComponent />
     </div>
   );
 };
