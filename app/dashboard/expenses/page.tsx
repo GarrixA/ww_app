@@ -5,7 +5,7 @@ import { Budgets, Expenses } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
 import { desc, eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import ExpensesTable from "./_components/ExpensesTable";
 import { Trash } from "lucide-react";
 
@@ -34,18 +34,6 @@ const ExpensesPage = ({ refreshData = () => {} }: any) => {
     getAllExpenses(email);
     console.log("All ==========>", allExpense);
   }, [isLoaded, user]);
-
-  const handleDeleteExpense = async (exp: AllExpenseProps) => {
-    const res = await db
-      .delete(Expenses)
-      .where(eq(Expenses.id, Number(exp.id)))
-      .returning();
-
-    if (res) {
-      refreshData();
-      toast("Expense deleted");
-    }
-  };
 
   const getAllExpenses = async (email: string) => {
     try {

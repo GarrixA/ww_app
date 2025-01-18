@@ -1,4 +1,4 @@
-import { PiggyBank, Receipt, Wallet } from "lucide-react";
+import { Banknote, PiggyBank, Receipt, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface BudgetProps {
@@ -40,7 +40,7 @@ const DashboardCards = ({ budgetInfo }: any) => {
               </h1>
             </div>
             <div className="bg-blue-700 rounded-full p-1">
-              <PiggyBank className="text-white" />
+              <Banknote className="text-white" />
             </div>
           </div>
           <div className="p-5 border rounded-lg flex items-center justify-between">

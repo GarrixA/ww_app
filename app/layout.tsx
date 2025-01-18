@@ -1,5 +1,5 @@
-import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ToastContainer } from "react-toastify";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -28,7 +28,14 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body>
-          <Toaster />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeButton={true}
+            rtl={false}
+          />
           {children}
         </body>
       </html>

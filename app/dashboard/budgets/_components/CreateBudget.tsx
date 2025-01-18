@@ -12,17 +12,25 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { db } from "@/utils/dbConfig";
-import { Budgets } from "@/utils/schema";
+import { Budgets, Incomes } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
 import EmojiPicker from "emoji-picker-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { desc, eq } from "drizzle-orm";
+
+interface IncomesProps {
+  amount?: number;
+  total_spent?: number;
+}
 
 const CreateBudget = ({ refreshData }: any) => {
   const [emojiIcon, setImojiIcon] = useState("😎");
   const [openImojiPicker, setImojiPicker] = useState(false);
   const [name, setName] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
+  const [incomesInfo, setIncomesInfo] = useState<any>();
+  const [incomeAmount, setIncomeAmount] = useState<number>(0);
 
   const { user, isLoaded } = useUser();
   const email = user?.primaryEmailAddress?.emailAddress;
@@ -30,8 +38,41 @@ const CreateBudget = ({ refreshData }: any) => {
     console.error("Email not present");
   }
 
-  // create budget
+  /**
+   * Get income informations
+   * @param email
+   */
+  const getIncomeInfo = async (email: string) => {
+    const res = await db
+      .select()
+      .from(Incomes)
+      .orderBy(desc(Incomes.id))
+      .where(eq(Incomes?.createdBy, email));
 
+    setIncomesInfo(res);
+  };
+
+  useEffect(() => {
+    if (isLoaded && email) {
+      getIncomeInfo(email);
+    }
+  }, [isLoaded, email]);
+
+  // Calculate total income when incomesInfo changes
+  useEffect(() => {
+    if (incomesInfo) {
+      let total_income = 0;
+      incomesInfo.forEach((info: IncomesProps) => {
+        total_income += Number(info.amount);
+      });
+      setIncomeAmount(total_income);
+    }
+  }, [incomesInfo]);
+
+  /**
+   * Handle submit of budget creation form
+   * @returns
+   */
   const handleSubmit = async () => {
     if (!email) {
       console.error("Email not present");
@@ -39,12 +80,39 @@ const CreateBudget = ({ refreshData }: any) => {
       return;
     }
 
+    const budgetAmount = parseFloat(amount);
+
+    if (isNaN(budgetAmount) || budgetAmount <= 0) {
+      toast.error("Please enter a valid budget amount");
+      return;
+    }
+
     try {
+      // Fetch the total allocated budget
+      const budgets = await db
+        .select()
+        .from(Budgets)
+        .where(eq(Budgets.createdBy, email));
+
+      const totalAllocatedBudget = budgets.reduce(
+        (total: number, budget: any) =>
+          total + parseFloat(budget.amount || "0"),
+        0
+      );
+
+      if (totalAllocatedBudget + budgetAmount > incomeAmount) {
+        toast.error(
+          `The total budget allocation exceeds your total income of ${incomeAmount}. Please reduce the budget amount.`
+        );
+        return;
+      }
+
+      // Insert new budget
       const createdBudget = await db
         .insert(Budgets)
         .values({
           name: name,
-          amount: amount,
+          amount: budgetAmount.toString(),
           createdBy: email,
           icon: emojiIcon,
         })
@@ -53,6 +121,8 @@ const CreateBudget = ({ refreshData }: any) => {
       if (createdBudget) {
         refreshData();
         toast("New budget created");
+        setName("");
+        setAmount("");
       }
     } catch (error) {
       console.error("Error creating budget:", error);
