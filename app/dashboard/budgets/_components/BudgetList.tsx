@@ -5,12 +5,13 @@ import CreateBudget from "./CreateBudget";
 import { desc, eq, getTableColumns, sql } from "drizzle-orm";
 import { Budgets, Expenses } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import BudgetCard from "./BudgetCard";
 
 const BudgetList = () => {
   const [budgets, setBudgets] = useState<any>([]);
+  const [loading, setLoading] = useState(true); // Track loading state
   const { user, isLoaded } = useUser();
 
   useEffect(() => {
@@ -26,8 +27,11 @@ const BudgetList = () => {
     getAllBudgets(email);
   }, [isLoaded, user]);
 
+  console.log("Budget", budgets);
+
   const getAllBudgets = async (email: string) => {
     try {
+      setLoading(true);
       const allBudgets = await db
         .select({
           ...getTableColumns(Budgets),
@@ -44,6 +48,8 @@ const BudgetList = () => {
     } catch (error) {
       console.error("Error fetching budgets:", error);
       toast.error("Failed to fetch budgets.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,16 +59,24 @@ const BudgetList = () => {
     <div className="mt-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {email && <CreateBudget refreshData={() => getAllBudgets(email)} />}
-        {budgets.length > 0
-          ? budgets.map((budget: any, idx: number) => (
-              <BudgetCard key={idx} budget={budget} />
-            ))
-          : [1, 2, 3, 4, 5].map((_skel, idx) => (
-              <div
-                key={idx}
-                className="w-full h-36 bg-slate-400 animate-pulse"
-              ></div>
-            ))}
+
+        {/* Conditional rendering based on loading and budgets state */}
+        {loading ? (
+          [1, 2, 3, 4, 5].map((_skel, idx) => (
+            <div
+              key={idx}
+              className="w-full h-36 bg-slate-400 animate-pulse"
+            ></div>
+          ))
+        ) : budgets.length > 0 ? (
+          budgets.map((budget: any, idx: number) => (
+            <BudgetCard key={idx} budget={budget} />
+          ))
+        ) : (
+          <div className="col-span-2 text-center text-gray-500 flex items-center justify-center text-2xl">
+            Please create budget
+          </div>
+        )}
       </div>
     </div>
   );

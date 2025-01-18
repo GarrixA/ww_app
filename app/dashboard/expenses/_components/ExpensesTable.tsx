@@ -2,7 +2,7 @@ import { db } from "@/utils/dbConfig";
 import { Expenses } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 import { Trash } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 interface ExpensesTableProps {
   id?: number;
@@ -25,7 +25,7 @@ const ExpensesTable = ({
       .returning();
 
     if (res) {
-      toast("Expense deleted");
+      toast.warning("Expense deleted");
       refreshData();
     }
   };

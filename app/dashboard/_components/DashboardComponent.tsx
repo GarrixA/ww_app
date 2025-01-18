@@ -5,10 +5,10 @@ import { Budgets, Expenses } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
 import { desc, eq, getTableColumns, sql } from "drizzle-orm";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import DashboardCards from "./DashboardCards";
-import ChartComponent from "./ChartComponent";
+import { toast } from "react-toastify";
 import BudgetCard from "../budgets/_components/BudgetCard";
+import ChartComponent from "./ChartComponent";
+import DashboardCards from "./DashboardCards";
 
 const DashboardComponent = () => {
   const [budgets, setBudgets] = useState<any>([]);
@@ -53,7 +53,7 @@ const DashboardComponent = () => {
       <h1 className="text-slate-600">Welcome!!</h1>
 
       <DashboardCards budgetInfo={budgets} />
-      <div className="mt-5 grid grid-col-1 md:grid-cols-3 gap-4">
+      <div className="mt-5 grid grid-col-1 lg:grid-cols-3 gap-4 ">
         <div className="md:col-span-2">
           <ChartComponent budgetInfo={budgets} />
         </div>

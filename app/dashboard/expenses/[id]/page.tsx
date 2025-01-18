@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { getTableColumns, sql, eq, and, desc } from "drizzle-orm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import BudgetCard from "../../budgets/_components/BudgetCard";
 import AddExpense from "../_components/AddExpense";
 import ExpensesTable from "../_components/ExpensesTable";
@@ -104,7 +104,7 @@ const MyExpenses = () => {
 
       if (res) {
         router.push("/dashboard/budgets");
-        toast("Budget deleted");
+        toast.warning("Budget deleted");
       }
     }
   };
@@ -129,8 +129,9 @@ const MyExpenses = () => {
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your budget and expenses remove them from our servers.
+                  This action cannot be undone. This <b>Budget</b> will
+                  permanently delete your budget and expenses remove them from
+                  our servers.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { db } from "@/utils/dbConfig";
 import { Budgets } from "@/utils/schema";
 import { eq } from "drizzle-orm";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 interface budgetsInfoProps {
   id: number;
@@ -59,7 +59,7 @@ const UpdateBudget = ({
 
     if (res) {
       refreshData();
-      toast("Budget updated");
+      toast.success("Budget updated");
     }
   };
 
