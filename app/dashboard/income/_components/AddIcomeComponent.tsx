@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { db } from "@/utils/dbConfig";
 import { Incomes } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { useState } from "react";
 
 interface AddIcomeComponentProps {
@@ -35,7 +35,7 @@ const AddIcomeComponent: React.FC<AddIcomeComponentProps> = ({ onSuccess }) => {
   const email = user?.primaryEmailAddress?.emailAddress;
 
   if (isLoaded && !email) {
-    console.error("Email not present");
+    toast.error("Email not present");
   }
 
   const incomeNames = ["Mobile money", "Bank account", "Cash"];
@@ -69,7 +69,6 @@ const AddIcomeComponent: React.FC<AddIcomeComponentProps> = ({ onSuccess }) => {
           "Income arleady exist. please use update button to change values"
         );
       } else {
-        console.error("Error adding income:", error);
         toast.error("Failed to add income");
       }
     }

@@ -24,7 +24,6 @@ const IncomesPage = () => {
     if (!isLoaded) return;
 
     if (!email) {
-      console.error("Email not present");
       toast.error("Unable to create budget: Email is missing");
       return;
     }
@@ -56,7 +55,6 @@ const IncomesPage = () => {
         .where(eq(Incomes?.createdBy, email));
       setIncomesInfo(res);
     } catch (error) {
-      console.error("Error fetching incomes:", error);
       toast.error("Failed to fetch incomes.");
     }
   };
@@ -76,7 +74,6 @@ const IncomesPage = () => {
         .orderBy(desc(Budgets.id));
       setBudgets(allBudgets);
     } catch (error) {
-      console.error("Error fetching budgets:", error);
       toast.error("Failed to fetch budgets.");
     }
   };

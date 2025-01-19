@@ -19,15 +19,12 @@ const BudgetList = () => {
 
     const email = user?.primaryEmailAddress?.emailAddress;
     if (!email) {
-      console.error("Email not present");
       toast.error("Unable to create budget: Email is missing");
       return;
     }
 
     getAllBudgets(email);
   }, [isLoaded, user]);
-
-  console.log("Budget", budgets);
 
   const getAllBudgets = async (email: string) => {
     try {
@@ -46,7 +43,6 @@ const BudgetList = () => {
 
       setBudgets(allBudgets);
     } catch (error) {
-      console.error("Error fetching budgets:", error);
       toast.error("Failed to fetch budgets.");
     } finally {
       setLoading(false);

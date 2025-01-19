@@ -31,7 +31,7 @@ const DashboardLayout = ({
       const email = user?.primaryEmailAddress?.emailAddress;
 
       if (!email) {
-        console.error("User email is not available");
+        toast.error("User email is not available");
         return;
       }
 

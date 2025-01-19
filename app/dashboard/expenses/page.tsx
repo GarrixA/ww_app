@@ -24,13 +24,11 @@ const ExpensesPage = ({ refreshData = () => {} }: any) => {
 
     const email = user?.primaryEmailAddress?.emailAddress;
     if (!email) {
-      console.error("Email not present");
       toast.error("Unable to fetch expenses: Email is missing");
       return;
     }
 
     getAllExpenses(email);
-    console.log("All ==========>", allExpense);
   }, [isLoaded, user]);
 
   const getAllExpenses = async (email: string) => {
@@ -48,10 +46,7 @@ const ExpensesPage = ({ refreshData = () => {} }: any) => {
         .where(eq(Budgets.createdBy, email))
         .orderBy(desc(Expenses.id));
       setAllExpense(res);
-
-      console.log("======>Res", res);
     } catch (error) {
-      console.error("Error fetching expenses:", error);
       toast.error("Failed to fetch expenses.");
     }
   };

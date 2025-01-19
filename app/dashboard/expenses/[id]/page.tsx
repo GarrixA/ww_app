@@ -37,7 +37,6 @@ const MyExpenses = () => {
 
     const email = user?.primaryEmailAddress?.emailAddress;
     if (!email) {
-      console.error("Email not present");
       toast.error("Unable to create budget: Email is missing");
       return;
     }
@@ -70,7 +69,6 @@ const MyExpenses = () => {
 
       getExpensesInfo();
     } catch (error) {
-      console.error("Error fetching budgets:", error);
       toast.error("Failed to fetch budgets.");
     }
   };

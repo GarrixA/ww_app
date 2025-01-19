@@ -7,8 +7,6 @@ interface BudgetProps {
 }
 
 const DashboardCards = ({ budgetInfo }: any) => {
-  console.log(budgetInfo);
-
   const [totalBudget, setTotalBudget] = useState(0);
   const [totalSpent, setTotalSpent] = useState(0);
 
