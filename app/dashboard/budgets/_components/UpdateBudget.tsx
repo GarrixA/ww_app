@@ -47,19 +47,23 @@ const UpdateBudget = ({
   }, [budgetsInfo]);
 
   const updateBudget = async () => {
-    const res = await db
-      .update(Budgets)
-      .set({
-        name: name,
-        amount: amount,
-        icon: emojiIcon,
-      })
-      .where(eq(Budgets.id, budgetsInfo.id))
-      .returning();
+    try {
+      const res = await db
+        .update(Budgets)
+        .set({
+          name: name,
+          amount: amount,
+          icon: emojiIcon,
+        })
+        .where(eq(Budgets.id, budgetsInfo.id))
+        .returning();
 
-    if (res) {
-      refreshData();
-      toast.success("Budget updated");
+      if (res) {
+        refreshData();
+        toast.success("Budget updated");
+      }
+    } catch (error) {
+      toast.error("Failed to update budget. Please try again.");
     }
   };
 

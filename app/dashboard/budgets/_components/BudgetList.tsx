@@ -11,7 +11,7 @@ import BudgetCard from "./BudgetCard";
 
 const BudgetList = () => {
   const [budgets, setBudgets] = useState<any>([]);
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [loading, setLoading] = useState(true);
   const { user, isLoaded } = useUser();
 
   useEffect(() => {
@@ -60,7 +60,6 @@ const BudgetList = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {email && <CreateBudget refreshData={() => getAllBudgets(email)} />}
 
-        {/* Conditional rendering based on loading and budgets state */}
         {loading ? (
           [1, 2, 3, 4, 5].map((_skel, idx) => (
             <div
