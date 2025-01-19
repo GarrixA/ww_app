@@ -93,7 +93,7 @@ const AddIcomeComponent: React.FC<AddIcomeComponentProps> = ({ onSuccess }) => {
               <SelectValue placeholder="Income" />
             </SelectTrigger>
             <SelectContent>
-              {incomeNames.map((iname, idx) => (
+              {incomeNames?.map((iname, idx) => (
                 <SelectItem key={idx} value={iname}>
                   {iname}
                 </SelectItem>

@@ -125,8 +125,8 @@ const IncomesPage = () => {
                 </div>
               ))}
             </div>
-          ) : incomesInfo.length > 0 ? (
-            incomesInfo.map((income, idx) => (
+          ) : incomesInfo?.length > 0 ? (
+            incomesInfo?.map((income, idx) => (
               <Incomecard
                 key={idx}
                 incomesInfo={income}
