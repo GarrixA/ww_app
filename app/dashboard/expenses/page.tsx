@@ -6,8 +6,6 @@ import { useUser } from "@clerk/nextjs";
 import { desc, eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import ExpensesTable from "./_components/ExpensesTable";
-import { Trash } from "lucide-react";
 
 interface AllExpenseProps {
   id: number;

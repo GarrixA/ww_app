@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import BudgetCard from "../budgets/_components/BudgetCard";
 import ChartComponent from "./ChartComponent";
 import DashboardCards from "./DashboardCards";
+import Link from "next/link";
 
 const DashboardComponent = () => {
   const [budgets, setBudgets] = useState<any>([]);
@@ -57,11 +58,22 @@ const DashboardComponent = () => {
         <div className="md:col-span-2">
           <ChartComponent budgetInfo={budgets} />
         </div>
-        <div className="flex flex-col gap-4">
+        <div
+          className={`flex flex-col gap-2 ${
+            budgets?.length <= 2 ? "gap-4" : ""
+          }`}
+        >
           <h1 className="text-lg font-bold">Latest budgets</h1>
-          {budgets.map((budget: any, idx: number) => (
+          {budgets?.slice(0, 2).map((budget: any, idx: number) => (
             <BudgetCard budget={budget} key={idx} />
           ))}
+          {budgets?.length > 2 && (
+            <Link href={"/dashboard/budgets"}>
+              <h1 className="text-center text-blue-700 hover:text-orange-600 cursor-pointer">
+                Load more
+              </h1>
+            </Link>
+          )}
         </div>
       </div>
     </div>

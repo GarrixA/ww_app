@@ -5,18 +5,26 @@ import { Budgets, Incomes } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
 import { eq } from "drizzle-orm";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import DashboardHeader from "./_components/DashboardHeader";
 import SideNav from "./_components/SideNav";
 import { toast } from "react-toastify";
+import SideBarModal from "./_components/SideBarModal";
+import { Menu } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 
 const DashboardLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  const [openModal, setOpenModal] = useState(false);
   const { user, isLoaded } = useUser();
   const router = useRouter();
+
+  const toggleModal = () => {
+    setOpenModal(!openModal);
+  };
 
   useEffect(() => {
     const checkUserBudgets = async () => {
@@ -57,6 +65,16 @@ const DashboardLayout = ({
 
   return (
     <div>
+      <div className="lg:hidden absolute m-7">
+        <Menu
+          className="text-black text-lg cursor-pointer"
+          onClick={() => toggleModal()}
+          size={28}
+        />
+        <AnimatePresence>
+          {openModal && <SideBarModal toggleModal={toggleModal} />}
+        </AnimatePresence>
+      </div>
       <div className="fixed hidden lg:w-64 lg:block shadow-lg">
         <SideNav />
       </div>

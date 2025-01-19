@@ -19,14 +19,19 @@ const ExpensesTable = ({
   refreshData: any;
 }) => {
   const handleDeleteExpense = async (exp: ExpensesTableProps) => {
-    const res = await db
-      .delete(Expenses)
-      .where(eq(Expenses.id, Number(exp.id)))
-      .returning();
+    try {
+      const res = await db
+        .delete(Expenses)
+        .where(eq(Expenses.id, Number(exp.id)))
+        .returning();
 
-    if (res) {
-      toast.warning("Expense deleted");
-      refreshData();
+      if (res) {
+        toast.warning("Expense deleted");
+        refreshData();
+      }
+    } catch (error) {
+      console.error("Error deleting expense:", error);
+      toast.error("Failed to delete expense. Please try again.");
     }
   };
 
