@@ -35,7 +35,7 @@ const CreateBudget = ({ refreshData }: any) => {
   const { user, isLoaded } = useUser();
   const email = user?.primaryEmailAddress?.emailAddress;
   if (isLoaded && !email) {
-    console.error("Email not present");
+    toast.error("Email not present");
   }
 
   /**
@@ -75,7 +75,6 @@ const CreateBudget = ({ refreshData }: any) => {
    */
   const handleSubmit = async () => {
     if (!email) {
-      console.error("Email not present");
       toast.error("Unable to create budget: Email is missing");
       return;
     }
@@ -125,7 +124,6 @@ const CreateBudget = ({ refreshData }: any) => {
         setAmount("");
       }
     } catch (error) {
-      console.error("Error creating budget:", error);
       toast.error("Failed to create budget");
     }
   };

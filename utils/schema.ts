@@ -1,8 +1,11 @@
 import {
+  index,
   integer,
   numeric,
   pgTable,
   serial,
+  unique,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -22,9 +25,21 @@ export const Expenses = pgTable("expenses", {
   createdAt: varchar("createdAt").notNull(),
 });
 
-export const Incomes = pgTable("incomes", {
-  id: serial("id").primaryKey(),
-  name: varchar("name").notNull().unique(),
-  amount: numeric("amount").notNull(),
-  createdBy: varchar("createdBy").notNull(),
-});
+export const Incomes = pgTable(
+  "incomes",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name").notNull(),
+    amount: numeric("amount").notNull(),
+    createdBy: varchar("createdBy").notNull(),
+  },
+  (table) => {
+    return {
+      nameIdx: index("name_idx").on(table.name),
+      incomeNameUniqueIdx: uniqueIndex("income_name_unique_idx").on(
+        table.createdBy,
+        table.name
+      ),
+    };
+  }
+);

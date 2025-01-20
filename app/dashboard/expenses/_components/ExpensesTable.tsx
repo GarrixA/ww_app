@@ -30,7 +30,6 @@ const ExpensesTable = ({
         refreshData();
       }
     } catch (error) {
-      console.error("Error deleting expense:", error);
       toast.error("Failed to delete expense. Please try again.");
     }
   };

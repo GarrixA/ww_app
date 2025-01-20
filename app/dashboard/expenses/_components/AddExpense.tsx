@@ -74,7 +74,6 @@ const AddExpense = ({
         toast.success("Expense added successfully");
       }
     } catch (error) {
-      console.error("Error adding expense:", error);
       toast.error("An error occurred while adding the expense.");
     }
   };

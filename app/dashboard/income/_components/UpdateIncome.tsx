@@ -34,7 +34,7 @@ const UpdateIncome: React.FC<UpdateIncomeProps> = ({
   const email = user?.primaryEmailAddress?.emailAddress;
 
   if (isLoaded && !email) {
-    console.error("Email not present");
+    toast.error("Email not present");
   }
 
   const handleSubmit = async () => {
@@ -56,7 +56,6 @@ const UpdateIncome: React.FC<UpdateIncomeProps> = ({
         if (onSuccess) onSuccess();
       }
     } catch (error: any) {
-      console.error("Error updating income:", error);
       toast.error("Failed to update income");
     }
   };
